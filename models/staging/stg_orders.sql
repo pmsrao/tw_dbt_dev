@@ -14,7 +14,8 @@ renamed as (
         id as order_id,
         user_id as customer_id,
         order_date,
-        status
+        cast(status as varchar(15) ),
+        last_modified_date
 
     from source
 

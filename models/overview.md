@@ -1,6 +1,6 @@
 {% docs __overview__ %}
 
-## Data Documentation for Jaffle Shop
+## Data Documentation for a simple demo Shop
 
 `jaffle_shop` is a fictional ecommerce store.
 

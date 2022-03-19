@@ -2,9 +2,12 @@ version: 2
 
 models:
   - name: dim_customers
-    description: This table has basic information about a customer, as well as some derived facts based on a customer's orders
+    description: This table has basic information about a customer (Dimension Tables)
 
     columns:
+      - name: customer_key
+        description: This is the primary key, generated through Hash
+
       - name: customer_id
         description: This is a unique identifier for a customer
         tests:
@@ -20,35 +23,29 @@ models:
       - name: email
         description: Customer's email address. PII.
 
-      - name: first_order
-        description: Date (UTC) of a customer's first order
-
-      - name: most_recent_order
-        description: Date (UTC) of a customer's most recent order
-
-      - name: number_of_orders
-        description: Count of the number of orders a customer has placed
-
-      - name: total_order_amount
-        description: Total value (AUD) of a customer's orders
+      - name: last_modified_date
+        description: Date (UTC) of a customer's information last updated
 
   - name: fct_orders
-    description: This table has basic information about orders, as well as some derived facts based on payments
+    description: This table has basic information about orders (Fact Table of Orders)
 
     columns:
+      - name: order_key
+        description: This is the primary key, generated through Hash
+
       - name: order_id
         tests:
           - unique
           - not_null
         description: This is a unique identifier for an order
 
-      - name: customer_id
+      - name: customer_key
         description: Foreign key to the customers table
         tests:
           - not_null
           - relationships:
               to: ref('dim_customers')
-              field: customer_id
+              field: customer_key
 
       - name: order_date
         description: Date (UTC) that the order was placed
@@ -59,27 +56,31 @@ models:
           - accepted_values:
               values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
 
-      - name: amount
-        description: Total amount (AUD) of the order
-        tests:
-          - not_null
+      - name: last_modified_date
+        description: Date (UTC) of a order's information last updated
 
-      - name: credit_card_amount
-        description: Amount of the order (AUD) paid for by credit card
-        tests:
-          - not_null
+  - name: fct_payments
+    description: This table has basic information about payments (Fact Table of Payments)
 
-      - name: coupon_amount
-        description: Amount of the order (AUD) paid for by coupon
-        tests:
-          - not_null
+    columns:
+      - name: payment_key
+        description: This is the primary key, generated through Hash
 
-      - name: bank_transfer_amount
-        description: Amount of the order (AUD) paid for by bank transfer
+      - name: payment_id
         tests:
+          - unique
           - not_null
+        description: This is a unique identifier for an payments
 
-      - name: gift_card_amount
-        description: Amount of the order (AUD) paid for by gift card
+      - name: order_key
+        description: Payment reference to the order *through Order Key)
+
+      - name: payment_method
+        description: Payment Method 
         tests:
-          - not_null
+          - accepted_values:
+              values: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
+
+      - name: last_modified_date
+        description: Date (UTC) of a payment's information last updated
+

@@ -12,9 +12,10 @@ renamed as (
 
     select
         id as customer_id,
-        first_name,
-        last_name,
-        email
+        cast(first_name as varchar(15) ),
+        cast(last_name as varchar(15) ),
+        cast (email as varchar(25) ),
+        last_modified_date
 
     from source
 

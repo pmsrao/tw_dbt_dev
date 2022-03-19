@@ -1,34 +1,29 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='customer_id'
+    )
+}}
+
 with customers as (
 
     select * from {{ ref('stg_customers') }}
-
-),
-
-customer_orders as (
-
-    select * from {{ ref('customer_orders') }}
-
-),
-
-customer_payments as (
-
-    select * from {{ ref('customer_payments') }}
+    {% if is_incremental() %}
+      where last_modified_date >= '2018-03-01'
+    {% endif %}    
 
 ),
 
 final as (
 
     select
+        {{ dbt_utils.surrogate_key(['customers.customer_id']) }} customer_key,
         customers.customer_id,
-        customer_orders.first_order,
-        customer_orders.most_recent_order,
-        customer_orders.number_of_orders,
-        customer_payments.total_amount as customer_lifetime_value
+        customers.first_name,
+        customers.last_name,
+        customers.last_modified_date
 
     from customers
-
-    left join customer_orders using (customer_id)
-    left join customer_payments using (customer_id)
 
 )
 
