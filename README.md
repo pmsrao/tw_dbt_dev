@@ -51,24 +51,28 @@ $ dbt debug
 $ dbt seed
 ```
 
-7. Run the models:
+7. [Optional] Install additional/supporting dbt packages defined in packages.yml:
+```bash
+$ dbt deps
+```
+8. Run the models:
 ```bash
 $ dbt run
 ```
 
 > **NOTE:** If this steps fails, it might be that you need to make small changes to the SQL in the models folder to adjust for the flavor of SQL of your target database. Definitely consider this if you are using a community-contributed adapter.
 
-8. Test the output of the models:
+9. Test the output of the models:
 ```bash
 $ dbt test
 ```
 
-9. Generate documentation for the project:
+10. Generate documentation for the project:
 ```bash
 $ dbt docs generate
 ```
 
-10. View the documentation for the project:
+11. View the documentation for the project:
 ```bash
 $ dbt docs serve
 ```
